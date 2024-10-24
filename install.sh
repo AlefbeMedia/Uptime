@@ -38,6 +38,7 @@ volumes:
   uptime-kuma:
 EOL
 
+# executable docker-compose.yml file
 chmod +x docker-compose.yml
 
 # Start the Docker service
@@ -153,6 +154,7 @@ echo -e "${plain}config.json file has been generated."
 
 EOL
 
+# executable config_generator.sh file
 chmod +x config_generator.sh
 
 echo -e "${plain}config generator file has been generated."
@@ -173,5 +175,5 @@ elif [[ "$ARCH" =~ ^(armv8*|armv8|arm64|aarch64)$ ]]; then
     touch config.json
     chmod +x config.json
 else
-    echo -e "${red}Unsupported CPU architecture!"
+    echo -e "${red}Unsupported CPU architecture! Xray not downloaded"
 fi
