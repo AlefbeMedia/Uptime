@@ -4,9 +4,13 @@ red='\033[0;31m'
 green='\033[0;32m'
 yellow='\033[0;33m'
 plain='\033[0m'
+BOLD='\033[1m'
 
 # check root
 [[ $EUID -ne 0 ]] && echo -e "${red}Fatal error: ${plain} Please run this script with root privilege \n " && exit 1
+
+# Show Alefbemedia
+echo -e "${yellow}${BOLD}ALEFBEMEDIA${plain}"
 
 # Check if Docker is installed
 if ! command -v docker &> /dev/null
@@ -175,5 +179,5 @@ elif [[ "$ARCH" =~ ^(armv8*|armv8|arm64|aarch64)$ ]]; then
     touch config.json
     chmod +x config.json
 else
-    echo -e "${red}Unsupported CPU architecture! Xray not downloaded"
+    echo -e "${red}Unsupported CPU architecture! Xray not downloaded ${plain}"
 fi
