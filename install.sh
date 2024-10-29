@@ -69,5 +69,9 @@ if ! command -v x-ui &> /dev/null
 then
     echo -e "${red}Please Install X-UI Pannel first >> ${plain}bash <(curl -Ls https://raw.githubusercontent.com/mhsanaei/3x-ui/master/install.sh) \n "
     exit 1
+else
+x-ui start
+echo -e "${yellow}x-ui is installed and the setting is:${plain}"
+x-ui settings
 fi
 
