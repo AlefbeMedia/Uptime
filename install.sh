@@ -77,7 +77,7 @@ docker compose up -d
 # X-UI check
 if ! command -v x-ui &> /dev/null
 then
-    echo -e "${red}Now Please Install X-UI Pannel >> ${plain}"bash <(curl -Ls https://raw.githubusercontent.com/mhsanaei/3x-ui/master/install.sh)" \n "
+    echo -e "${red}Now Please Install X-UI Pannel >> ${plain}bash <(curl -Ls https://raw.githubusercontent.com/mhsanaei/3x-ui/master/install.sh) \n "
 else
 x-ui start
 echo -e "${yellow}x-ui is installed and the setting is:${plain}"
