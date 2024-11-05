@@ -83,5 +83,8 @@ x-ui start
 echo -e "${yellow}x-ui is installed and the setting is:${plain}"
 x-ui settings
 fi
-echo -e "${green}ALEFBEMEDIA Uptime Service is Online ✅${plain}"
+echo -e "\n"
+echo -e "${BOLD}* ALEFBEMEDIA Uptime Service is Online ✅ \n"
+server_ip=$(curl -s https://api.ipify.org)
+echo -e "${yellow}> Access URL: ${plain}http://${server_ip}:3001 \n \n"
 exit 1
