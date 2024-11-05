@@ -13,11 +13,12 @@ BOLD='\033[1m'
 CONTAINER_NAME="uptime-kuma"
 if command -v docker &> /dev/null
 then
-if docker ps -a --format '{{.Names}}' | grep -q "^${CONTAINER_NAME}$"; then
-  docker stop uptime-kuma
-  docker rm uptime-kuma
+  if docker ps -a --format '{{.Names}}' | grep -q "^${CONTAINER_NAME}$"; then
+    docker stop "${CONTAINER_NAME}"
+    docker rm "${CONTAINER_NAME}"
+  fi
 fi
-fi
+
 
 # port selection
 default_port=3001
