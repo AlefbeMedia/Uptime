@@ -7,7 +7,7 @@ plain='\033[0m'
 BOLD='\033[1m'
 
 # check root
-[[ $EUID -ne 0 ]] && echo -e "${red}Fatal error: ${plain} Please run this script with root privilege \n " && exit 1
+[[ $EUID -ne 0 ]] && echo -e "${red}${BOLD}Fatal error: ${yellow} Please run this script with root privilege \n " && exit 1
 
 # delete docker container
 if [ "$(docker ps -a -q -f name=uptime-kuma)" ]; then
@@ -15,10 +15,23 @@ if [ "$(docker ps -a -q -f name=uptime-kuma)" ]; then
   docker rm uptime-kuma
 fi
 
-# Check if port 3001 is in use
-if lsof -i:3001 > /dev/null; then
-    echo -e "${red}Error: Port 3001 is already in use${plain}"
-fi
+# port selection
+default_port=3001
+while true; do
+  # Prompt the user for input
+  read -p "Enter port number [default: $default_port]: " port
+  
+  # Use default value if no input is provided
+  port=${port:-$default_port}
+  
+  # Check if the port is in use
+  if lsof -i :$port > /dev/null; then
+    echo -e "${red}Error: Port $port is already in use${plain}"
+  else
+    echo -e "Using port: $port"
+    break
+  fi
+done
 
 # Loading effect
 loading() {
@@ -28,16 +41,19 @@ loading() {
     sleep 1
     echo -ne "\r${yellow}${BOLD}        * ALEFBEMEDIA Uptime Service...${plain}"
     sleep 1
-    echo -ne "\n \n"
+    echo -ne "\n"
 }
 loading
 
 # Check if Docker is installed
 if ! command -v docker &> /dev/null
 then
+    echo -e "${red}Docker is Offline ❌"
+    sleep 1
+    echo -e "${yellow}${BOLD}Installing docker..${plain}"
     interface=$(ip route | grep default | awk '{print $5}')
     resolvectl dns $interface 178.22.122.100 185.51.200.2
-    #curl -fsSL https://get.docker.com | sh
+    curl -fsSL https://get.docker.com | sh
     resolvectl dns $interface 8.8.8.8 8.8.4.4
 fi
 
@@ -64,7 +80,7 @@ services:
     container_name: uptime-kuma
     restart: always
     ports:
-      - "3001:3001"
+      - "$port:3001"
     volumes:
       - uptime-kuma:/app/data
 volumes:
@@ -77,13 +93,14 @@ docker compose up -d
 # X-UI check
 if ! command -v x-ui &> /dev/null
 then
-    echo -e "\n${red}Now Please Install X-UI Pannel >> ${plain}bash <(curl -Ls https://raw.githubusercontent.com/mhsanaei/3x-ui/master/install.sh) \n "
+    echo -e "${red}Now Please Install X-UI Pannel >> ${plain}bash <(curl -Ls https://raw.githubusercontent.com/mhsanaei/3x-ui/master/install.sh)"
 else
 x-ui start
 echo -e "${yellow}x-ui is installed and the setting is:${plain}"
 x-ui settings
 fi
-echo -e "${BOLD}* ALEFBEMEDIA Uptime Service is Online ✅"
+echo -e "\n${BOLD}* ALEFBEMEDIA Uptime Service is Online ✅"
 server_ip=$(curl -s https://api.ipify.org)
-echo -e "${yellow}> Access URL: ${plain}http://${server_ip}:3001 \n \n"
+echo -e "${yellow}> Access URL: ${plain}http://${server_ip}:$port \n"
+echo -e "${yellow}+ Alefbemedia Telegram Channel: ${plain}https://t.me/+VXskKuUuOBEPUB8i \n"
 exit 1
