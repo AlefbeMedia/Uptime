@@ -12,6 +12,7 @@ BOLD='\033[1m'
 # delete docker container
 CONTAINER_NAME="uptime-kuma"
 if ! command -v docker &> /dev/null
+then
 if docker ps -a --format '{{.Names}}' | grep -q "^${CONTAINER_NAME}$"; then
   docker stop uptime-kuma
   docker rm uptime-kuma
