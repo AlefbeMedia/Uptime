@@ -10,7 +10,8 @@ BOLD='\033[1m'
 [[ $EUID -ne 0 ]] && echo -e "${red}${BOLD}Fatal error: ${yellow} Please run this script with root privilege \n " && exit 1
 
 # delete docker container
-if [ "$(docker ps -a -q -f name=uptime-kuma)" ]; then
+CONTAINER_NAME="uptime-kuma"
+if docker ps -a --format '{{.Names}}' | grep -q "^${CONTAINER_NAME}$"; then
   docker stop uptime-kuma
   docker rm uptime-kuma
 fi
@@ -94,10 +95,6 @@ docker compose up -d
 if ! command -v x-ui &> /dev/null
 then
     echo -e "${red}Now Please Install X-UI Pannel >> ${plain}bash <(curl -Ls https://raw.githubusercontent.com/mhsanaei/3x-ui/master/install.sh)"
-else
-x-ui start
-echo -e "${yellow}x-ui is installed and the setting is:${plain}"
-x-ui settings
 fi
 echo -e "\n${BOLD}* ALEFBEMEDIA Uptime Service is Online ✅"
 server_ip=$(curl -s https://api.ipify.org)
