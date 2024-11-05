@@ -29,8 +29,10 @@ loading
 # Check if Docker is installed
 if ! command -v docker &> /dev/null
 then
-    echo -e "${red}Please Install Docker first >> ${plain}bash <(curl -Ls https://raw.githubusercontent.com/dev-ir/ez-docker/master/main.sh) \n "
-    exit 1
+    interface=$(ip route | grep default | awk '{print $5}')
+    resolvectl dns $interface 178.22.122.100 185.51.200.2
+    #curl -fsSL https://get.docker.com | sh
+    resolvectl dns $interface 8.8.8.8 8.8.4.4
 fi
 
 echo -e "${green}Docker is Onlie ✅"
@@ -40,7 +42,15 @@ sleep 1
 cd ~
 
 # delete AlefbeMedia_uptime Directory
+if [ -d "AlefbeMedia_uptime" ]; then
 rm -r AlefbeMedia_uptime
+fi
+
+# delete docker container
+if [ "$(docker ps -a -q -f name=uptime-kuma)" ]; then
+  docker stop uptime-kuma
+  docker rm uptime-kuma
+fi
 
 # Create and navigate to AlefbeMedia_uptime directory
 mkdir -p AlefbeMedia_uptime && cd AlefbeMedia_uptime
@@ -67,11 +77,11 @@ docker compose up -d
 # X-UI check
 if ! command -v x-ui &> /dev/null
 then
-    echo -e "${red}Please Install X-UI Pannel first >> ${plain}bash <(curl -Ls https://raw.githubusercontent.com/mhsanaei/3x-ui/master/install.sh) \n "
-    exit 1
+    echo -e "${red}Now Please Install X-UI Pannel >> ${plain}bash <(curl -Ls https://raw.githubusercontent.com/mhsanaei/3x-ui/master/install.sh) \n "
 else
 x-ui start
 echo -e "${yellow}x-ui is installed and the setting is:${plain}"
 x-ui settings
 fi
-
+echo -e "${green}ALEFBEMEDIA Uptime Service is Online ✅${plain}"
+exit 1
