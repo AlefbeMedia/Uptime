@@ -9,35 +9,6 @@ BOLD='\033[1m'
 # check root
 [[ $EUID -ne 0 ]] && echo -e "${red}${BOLD}Fatal error: ${yellow} Please run this script with root privilege \n " && exit 1
 
-# delete docker container
-CONTAINER_NAME="uptime-kuma"
-if command -v docker &> /dev/null
-then
-  if docker ps -a --format '{{.Names}}' | grep -q "^${CONTAINER_NAME}$"; then
-    docker stop "${CONTAINER_NAME}"
-    docker rm "${CONTAINER_NAME}"
-  fi
-fi
-
-
-# port selection
-default_port=3001
-while true; do
-  # Prompt the user for input
-  read -p "Enter port number [default: $default_port]: " port
-  
-  # Use default value if no input is provided
-  port=${port:-$default_port}
-  
-  # Check if the port is in use
-  if lsof -i :$port > /dev/null; then
-    echo -e "${red}Error: Port $port is already in use${plain}"
-  else
-    echo -e "Using port: $port"
-    break
-  fi
-done
-
 # Loading effect
 loading() {
     echo -ne "${yellow}${BOLD}        * ALEFBEMEDIA Uptime Service."
@@ -61,9 +32,33 @@ then
     curl -fsSL https://get.docker.com | sh
     resolvectl dns $interface 8.8.8.8 8.8.4.4
 fi
-
 echo -e "${green}Docker is Onlie ✅"
 sleep 1
+
+# delete docker container
+CONTAINER_NAME="uptime-kuma"
+if docker ps -a --format '{{.Names}}' | grep -q "^${CONTAINER_NAME}$"; then
+  docker stop uptime-kuma
+  docker rm uptime-kuma
+fi
+
+# port selection
+default_port=3001
+while true; do
+  # Prompt the user for input
+  read -p "Enter port number [default: $default_port]: " port
+  
+  # Use default value if no input is provided
+  port=${port:-$default_port}
+  
+  # Check if the port is in use
+  if lsof -i :$port > /dev/null; then
+    echo -e "${red}Error: Port $port is already in use${plain}"
+  else
+    echo -e "Using port: $port"
+    break
+  fi
+done
 
 # Navigate to root directory
 cd ~
