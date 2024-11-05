@@ -9,6 +9,12 @@ BOLD='\033[1m'
 # check root
 [[ $EUID -ne 0 ]] && echo -e "${red}Fatal error: ${plain} Please run this script with root privilege \n " && exit 1
 
+# delete docker container
+if [ "$(docker ps -a -q -f name=uptime-kuma)" ]; then
+  docker stop uptime-kuma
+  docker rm uptime-kuma
+fi
+
 # Check if port 3001 is in use
 if lsof -i:3001 > /dev/null; then
     echo -e "${red}Error: Port 3001 is already in use${plain}"
@@ -46,12 +52,6 @@ if [ -d "AlefbeMedia_uptime" ]; then
 rm -r AlefbeMedia_uptime
 fi
 
-# delete docker container
-if [ "$(docker ps -a -q -f name=uptime-kuma)" ]; then
-  docker stop uptime-kuma
-  docker rm uptime-kuma
-fi
-
 # Create and navigate to AlefbeMedia_uptime directory
 mkdir -p AlefbeMedia_uptime && cd AlefbeMedia_uptime
 
@@ -77,14 +77,13 @@ docker compose up -d
 # X-UI check
 if ! command -v x-ui &> /dev/null
 then
-    echo -e "${red}Now Please Install X-UI Pannel >> ${plain}bash <(curl -Ls https://raw.githubusercontent.com/mhsanaei/3x-ui/master/install.sh) \n "
+    echo -e "\n${red}Now Please Install X-UI Pannel >> ${plain}bash <(curl -Ls https://raw.githubusercontent.com/mhsanaei/3x-ui/master/install.sh) \n "
 else
 x-ui start
 echo -e "${yellow}x-ui is installed and the setting is:${plain}"
 x-ui settings
 fi
-echo -e "\n"
-echo -e "${BOLD}* ALEFBEMEDIA Uptime Service is Online ✅ \n"
+echo -e "${BOLD}* ALEFBEMEDIA Uptime Service is Online ✅"
 server_ip=$(curl -s https://api.ipify.org)
 echo -e "${yellow}> Access URL: ${plain}http://${server_ip}:3001 \n \n"
 exit 1
