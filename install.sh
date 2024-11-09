@@ -1,8 +1,6 @@
 #!/bin/bash
 
 clear
-printf "\033c"
-clear >$(tty)
 
 red='\033[0;31m'
 green='\033[0;32m'
