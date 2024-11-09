@@ -32,7 +32,7 @@ then
     curl -fsSL https://get.docker.com | sh
     resolvectl dns $interface 8.8.8.8 8.8.4.4
 fi
-echo -e "${green}Docker is Onlie ✅"
+echo -e "${green}Docker is Onlie ✅${plain}"
 sleep 1
 
 # delete docker container
