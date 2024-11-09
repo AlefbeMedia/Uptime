@@ -21,6 +21,8 @@ loading() {
 }
 loading
 
+clear
+
 # Check if Docker is installed
 if ! command -v docker &> /dev/null
 then
