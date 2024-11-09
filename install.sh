@@ -1,5 +1,7 @@
 #!/bin/bash
 
+clear
+
 red='\033[0;31m'
 green='\033[0;32m'
 yellow='\033[0;33m'
@@ -20,9 +22,6 @@ loading() {
     echo -ne "\n"
 }
 loading
-
-clear
-printf "\033c"
 
 # Check if Docker is installed
 if ! command -v docker &> /dev/null
