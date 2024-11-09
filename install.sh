@@ -22,6 +22,7 @@ loading() {
 loading
 
 clear
+printf "\033c"
 
 # Check if Docker is installed
 if ! command -v docker &> /dev/null
