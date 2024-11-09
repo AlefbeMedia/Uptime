@@ -41,15 +41,18 @@ then
     # Set DNS temporarily for Docker installation
     interface=$(ip route | grep default | awk '{print $5}')
     resolvectl dns $interface 178.22.122.100 185.51.200.2
-    resolvectl dns 178.22.122.100 185.51.200.2
+    cp /etc/resolv.conf /etc/resolv.conf.backup
+    echo -e "nameserver 178.22.122.100\nnameserver 185.51.200.2" > /etc/resolv.conf
 
     # Attempt to download and install Docker script
     http_status=$(curl -o install_docker.sh -w "%{http_code}" -fsSL https://get.docker.com)
 
     if [ "$http_status" -eq 403 ]; then
-        echo -e "${red}Error: Failed to download Docker installation script. HTTP Status: $http_status${plain}"
-        resolvectl dns $interface 8.8.8.8 8.8.4.4 # Reset DNS
-        resolvectl dns 8.8.8.8 8.8.4.4
+        echo -e "${red}Failed to download Docker${plain}"
+        echo -e "use this script >> bash <(curl -Ls https://raw.githubusercontent.com/dev-ir/ez-docker/master/main.sh)"
+        resolvectl dns $interface 8.8.8.8 8.8.4.4
+        cp /etc/resolv.conf.backup /etc/resolv.conf
+        rm -f /etc/resolv.conf.backup
         rm -f install_docker.sh
         exit 1
     fi
