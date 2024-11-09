@@ -28,6 +28,9 @@ then
     sleep 1
     echo -e "${yellow}${BOLD}Installing docker..${plain}"
     interface=$(ip route | grep default | awk '{print $5}')
+    apt install systemd-resolved -y
+    systemctl enable systemd-resolved
+    systemctl start systemd-resolved
     resolvectl dns $interface 178.22.122.100 185.51.200.2
     curl -fsSL https://get.docker.com | sh
     resolvectl dns $interface 8.8.8.8 8.8.4.4
