@@ -23,21 +23,36 @@ loading() {
 }
 loading
 
+#!/bin/bash
+
 # Check if Docker is installed
 if ! command -v docker &> /dev/null
 then
     echo -e "${red}Docker is Offline ❌"
     sleep 1
-    echo -e "${yellow}${BOLD}Installing docker..${plain}"
+    echo -e "${yellow}${BOLD}Installing Docker...${plain}"
+
+    # Install and configure systemd-resolved
     apt install systemd-resolved -y
     systemctl enable systemd-resolved
     systemctl start systemd-resolved
+
+    # Set DNS temporarily for Docker installation
     interface=$(ip route | grep default | awk '{print $5}')
     resolvectl dns $interface 178.22.122.100 185.51.200.2
-    curl -fsSL https://get.docker.com | sh
+
+    # Attempt to install Docker
+    if ! curl -fsSL https://get.docker.com | sh; then
+        echo -e "${red}Error: Failed to install Docker. Check network or permissions.${plain}"
+        resolvectl dns $interface 8.8.8.8 8.8.4.4 # Reset DNS
+        exit 1
+    fi
+
+    # Reset DNS to default
     resolvectl dns $interface 8.8.8.8 8.8.4.4
 fi
-echo -e "${green}Docker is Onlie ✅${plain}"
+
+echo -e "${green}Docker is Online ✅${plain}"
 sleep 1
 
 # delete docker container
