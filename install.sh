@@ -26,6 +26,9 @@ loading
 #!/bin/bash
 
 # Check if Docker is installed
+#!/bin/bash
+
+# Check if Docker is installed
 if ! command -v docker &> /dev/null
 then
     echo -e "${red}Docker is Offline ❌"
@@ -41,12 +44,19 @@ then
     interface=$(ip route | grep default | awk '{print $5}')
     resolvectl dns $interface 178.22.122.100 185.51.200.2
 
-    # Attempt to install Docker
-    if ! curl -fsSL https://get.docker.com | sh; then
-        echo -e "${red}Error: Failed to install Docker. Check network or permissions.${plain}"
+    # Attempt to download and install Docker script
+    http_status=$(curl -o install_docker.sh -w "%{http_code}" -fsSL https://get.docker.com)
+
+    if [ "$http_status" -ne 200 ]; then
+        echo -e "${red}Error: Failed to download Docker installation script. HTTP Status: $http_status${plain}"
         resolvectl dns $interface 8.8.8.8 8.8.4.4 # Reset DNS
+        rm -f install_docker.sh
         exit 1
     fi
+
+    # Run the Docker installation script if download was successful
+    sh install_docker.sh
+    rm -f install_docker.sh # Clean up the script after running
 
     # Reset DNS to default
     resolvectl dns $interface 8.8.8.8 8.8.4.4
