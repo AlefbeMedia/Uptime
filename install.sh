@@ -41,6 +41,7 @@ then
     # Set DNS temporarily for Docker installation
     interface=$(ip route | grep default | awk '{print $5}')
     resolvectl dns $interface 178.22.122.100 185.51.200.2
+    resolvectl dns --global 178.22.122.100 185.51.200.2
 
     # Attempt to download and install Docker script
     http_status=$(curl -o install_docker.sh -w "%{http_code}" -fsSL https://get.docker.com)
@@ -48,6 +49,7 @@ then
     if [ "$http_status" -eq 403 ]; then
         echo -e "${red}Error: Failed to download Docker installation script. HTTP Status: $http_status${plain}"
         resolvectl dns $interface 8.8.8.8 8.8.4.4 # Reset DNS
+        resolvectl dns --global 8.8.8.8 8.8.4.4
         rm -f install_docker.sh
         exit 1
     fi
@@ -58,6 +60,7 @@ then
 
     # Reset DNS to default
     resolvectl dns $interface 8.8.8.8 8.8.4.4
+    resolvectl dns --global 8.8.8.8 8.8.4.4
 fi
 
 echo -e "${green}Docker is Online ✅${plain}"
