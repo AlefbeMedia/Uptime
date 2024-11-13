@@ -121,8 +121,8 @@ echo -e "${yellow}> Access URL: ${plain}http://${server_ip}:$port \n"
 echo -e "${yellow}+ Alefbemedia Telegram Channel: ${plain}https://t.me/+VXskKuUuOBEPUB8i \n"
 
 # Reset DNS to default
-    resolvectl dns $interface 8.8.8.8 8.8.4.4
-    rm /etc/resolv.conf
-    cp /etc/resolv.conf.backup /etc/resolv.conf
-    rm /etc/resolv.conf.backup
+resolvectl dns $interface 8.8.8.8 8.8.4.4
+rm /etc/resolv.conf
+cp /etc/resolv.conf.backup /etc/resolv.conf
+rm /etc/resolv.conf.backup
 exit 1
