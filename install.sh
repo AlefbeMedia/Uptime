@@ -26,7 +26,6 @@ loading
 # Set DNS temporarily for Docker installation
 interface=$(ip route | grep default | awk '{print $5}')
 resolvectl dns $interface 178.22.122.100 185.51.200.2
-cp /etc/resolv.conf /etc/resolv.conf.backup
 echo -e "nameserver 178.22.122.100\nnameserver 185.51.200.2" > /etc/resolv.conf
     
 # Navigate to root directory
@@ -122,7 +121,5 @@ echo -e "${yellow}+ Alefbemedia Telegram Channel: ${plain}https://t.me/+VXskKuUu
 
 # Reset DNS to default
 resolvectl dns $interface 8.8.8.8 8.8.4.4
-rm /etc/resolv.conf
-cp /etc/resolv.conf.backup /etc/resolv.conf
-rm /etc/resolv.conf.backup
+echo -e "nameserver 8.8.8.8\nnameserver 8.8.4.4" > /etc/resolv.conf
 exit 1
