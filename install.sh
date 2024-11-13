@@ -23,6 +23,12 @@ loading() {
 }
 loading
 
+    # Set DNS temporarily for Docker installation
+    interface=$(ip route | grep default | awk '{print $5}')
+    resolvectl dns $interface 178.22.122.100 185.51.200.2
+    cp /etc/resolv.conf /etc/resolv.conf.backup
+    echo -e "nameserver 178.22.122.100\nnameserver 185.51.200.2" > /etc/resolv.conf
+    
 # Navigate to root directory
 cd ~
 
@@ -32,13 +38,7 @@ then
     echo -e "${red}Docker is Offline ❌"
     sleep 1
     echo -e "${yellow}${BOLD}Installing Docker...${plain}"
-
-    # Set DNS temporarily for Docker installation
-    interface=$(ip route | grep default | awk '{print $5}')
-    resolvectl dns $interface 178.22.122.100 185.51.200.2
-    cp /etc/resolv.conf /etc/resolv.conf.backup
-    echo -e "nameserver 178.22.122.100\nnameserver 185.51.200.2" > /etc/resolv.conf
-
+    
     curl -fsSL https://get.docker.com | sh
 fi
 
