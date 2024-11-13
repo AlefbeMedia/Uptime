@@ -66,6 +66,12 @@ then
     resolvectl dns 8.8.8.8 8.8.4.4
 fi
 
+# Check if Docker is installed
+if ! command -v docker &> /dev/null
+then
+snap install docker
+fi
+
 echo -e "${green}Docker is Online ✅${plain}"
 sleep 1
 
