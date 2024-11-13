@@ -33,37 +33,19 @@ then
     sleep 1
     echo -e "${yellow}${BOLD}Installing Docker...${plain}"
 
-    # Install and configure systemd-resolved
-    apt install systemd-resolved -y
-    systemctl enable systemd-resolved
-    systemctl start systemd-resolved
-
     # Set DNS temporarily for Docker installation
     interface=$(ip route | grep default | awk '{print $5}')
     resolvectl dns $interface 178.22.122.100 185.51.200.2
     cp /etc/resolv.conf /etc/resolv.conf.backup
     echo -e "nameserver 178.22.122.100\nnameserver 185.51.200.2" > /etc/resolv.conf
 
-    # Attempt to download and install Docker script
-    http_status=$(curl -o install_docker.sh -w "%{http_code}" -fsSL https://get.docker.com)
-
-    if [ "$http_status" -eq 403 ]; then
-        echo -e "${red}Failed to download Docker${plain}"
-        echo -e "use this script >> bash <(curl -Ls https://raw.githubusercontent.com/dev-ir/ez-docker/master/main.sh)"
-        resolvectl dns $interface 8.8.8.8 8.8.4.4
-        cp /etc/resolv.conf.backup /etc/resolv.conf
-        rm -f /etc/resolv.conf.backup
-        rm -f install_docker.sh
-        exit 1
-    fi
-
-    # Run the Docker installation script if download was successful
-    sh install_docker.sh
-    rm -f install_docker.sh # Clean up the script after running
-
+    curl -fsSL https://get.docker.com | sh
+    
     # Reset DNS to default
     resolvectl dns $interface 8.8.8.8 8.8.4.4
-    resolvectl dns 8.8.8.8 8.8.4.4
+    rm /etc/resolv.conf
+    cp /etc/resolv.conf.backup /etc/resolv.conf
+    rm /etc/resolv.conf.backup
 fi
 
 # Check if Docker is installed
@@ -72,7 +54,14 @@ then
 snap install docker
 fi
 
-echo -e "${green}Docker is Online ✅${plain}"
+# Check if Docker is installed
+if command -v docker &> /dev/null; then
+  echo -e "${green}Docker is Online ✅${plain}"
+else
+  echo -e "${red}Docker failed to install ❌${plain}"
+  exit 1
+fi
+
 sleep 1
 
 # delete docker container
