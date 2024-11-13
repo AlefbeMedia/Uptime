@@ -40,12 +40,6 @@ then
     echo -e "nameserver 178.22.122.100\nnameserver 185.51.200.2" > /etc/resolv.conf
 
     curl -fsSL https://get.docker.com | sh
-    
-    # Reset DNS to default
-    resolvectl dns $interface 8.8.8.8 8.8.4.4
-    rm /etc/resolv.conf
-    cp /etc/resolv.conf.backup /etc/resolv.conf
-    rm /etc/resolv.conf.backup
 fi
 
 # Check if Docker is installed
@@ -125,4 +119,10 @@ echo -e "\n${BOLD}* ALEFBEMEDIA Uptime Service is Online ✅"
 server_ip=$(curl -s https://api.ipify.org)
 echo -e "${yellow}> Access URL: ${plain}http://${server_ip}:$port \n"
 echo -e "${yellow}+ Alefbemedia Telegram Channel: ${plain}https://t.me/+VXskKuUuOBEPUB8i \n"
+
+# Reset DNS to default
+    resolvectl dns $interface 8.8.8.8 8.8.4.4
+    rm /etc/resolv.conf
+    cp /etc/resolv.conf.backup /etc/resolv.conf
+    rm /etc/resolv.conf.backup
 exit 1
